@@ -2,198 +2,1388 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KITAAB — Brutalism mockup v2</title>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Sans:wght@400;500;700;800&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KITAAB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#F5F3EE;
-    --line:#000000;
+    --paper:#FFFFFF;
+    --paper-hover:#FBEFD8;
     --ink:#0D0C0A;
-    --yellow:#F4C63D;
+    --ink-muted:#4A463F;
+    --ink-faint:#8A8478;
+    --line:#000000;
+    --gold:#F4C63D;
     --teal:#4BA88F;
     --coral:#E8654A;
     --lavender:#B9A6E8;
-    --paper:#FFFFFF;
+    --bg-elevated:#EFEBE1;
+    --border:#000000;
+    --radius:0px;
+    --shadow: 5px 5px 0 var(--line);
   }
   *{box-sizing:border-box;}
+  html,body{height:100%;}
   body{
-    margin:0; background:var(--bg); color:var(--ink);
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
     font-family:'IBM Plex Sans', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior:none;
   }
-  #app{max-width:480px; margin:0 auto; min-height:100vh; padding:20px 16px 60px 16px;}
-
-  .tabs{display:flex; gap:0; margin-bottom:26px; border:4px solid var(--line);}
-  .tab{
-    flex:1; text-align:center; padding:10px;
-    background:var(--paper); color:var(--ink);
-    font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:12px; letter-spacing:0.05em;
+  #app{
+    max-width:640px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 20px 16px 20px;
+    position:sticky;
+    top:0;
+    background:var(--bg);
+    z-index:10;
+    border-bottom:3px solid var(--line);
+    gap:10px;
+  }
+  .brand{
+    font-family:'Archivo Black', sans-serif;
+    font-size:22px;
+    letter-spacing:0.2px;
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    gap:9px;
+  }
+  .brand .reel{width:22px;height:22px;flex-shrink:0;}
+  .header-title{
+    font-family:'Archivo Black', sans-serif;
+    font-size:17px;
+    text-transform:uppercase;
+    flex:1;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .icon-btn{
+    background:var(--paper);
+    border:2.5px solid var(--line);
+    color:var(--ink);
     cursor:pointer;
-  }
-  .tab:first-child{border-right:4px solid var(--line);}
-  .tab.active{background:var(--ink); color:#fff;}
-  .view{display:none;}
-  .view.active{display:block;}
-
-  h1.brand{
-    font-family:'Archivo Black', sans-serif; font-size:30px; text-transform:uppercase;
-    margin:0 0 22px 0; letter-spacing:0.5px;
-  }
-  .section-label{
-    display:inline-block;
-    font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:11px; letter-spacing:0.06em;
-    text-transform:uppercase; color:#fff; background:var(--ink);
-    padding:4px 10px; margin:0 0 12px 0;
-  }
-
-  .recent-row{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:28px;}
-  .tile{
-    border:4px solid var(--line);
-    box-shadow:6px 6px 0 var(--line);
-    padding:12px 10px;
+    padding:7px;
+    border-radius:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     transition:transform .08s, box-shadow .08s;
-    cursor:pointer;
+    flex-shrink:0;
+    box-shadow:3px 3px 0 var(--line);
   }
-  .tile:active{transform:translate(4px,4px); box-shadow:2px 2px 0 var(--line);}
-  .tile.c1{background:var(--yellow);}
-  .tile.c2{background:var(--teal); color:#fff;}
-  .tile.c3{background:var(--lavender);}
-  .tile .t-notebook{font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:9px; letter-spacing:0.05em; text-transform:uppercase;}
-  .tile .t-title{font-family:'Archivo Black', sans-serif; font-size:14px; margin-top:8px; line-height:1.2; text-transform:uppercase;}
-  .tile .t-meta{font-family:'IBM Plex Mono', monospace; font-size:9px; margin-top:12px; opacity:0.75;}
+  .icon-btn:hover{background:var(--paper-hover);}
+  .icon-btn:active{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--line);}
+  .icon-btn.active{background:var(--gold);}
+
+  #homeList, #notesList{padding:18px 16px 100px 16px; flex:1;}
+  .empty-state{
+    text-align:center;
+    padding:70px 30px;
+    color:var(--ink-muted);
+  }
+  .empty-state .big{
+    font-family:'Archivo Black', sans-serif;
+    font-size:17px;
+    color:var(--ink);
+    margin-bottom:6px;
+    text-transform:uppercase;
+  }
 
   .card{
     background:var(--paper);
-    border:4px solid var(--line);
-    box-shadow:6px 6px 0 var(--line);
-    padding:16px;
+    border:3px solid var(--line);
+    box-shadow:5px 5px 0 var(--line);
+    border-radius:0;
+    padding:16px 16px 14px 16px;
     margin-bottom:16px;
-    display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
-    transition:transform .08s, box-shadow .08s;
     cursor:pointer;
+    transition:transform .08s, box-shadow .08s;
+    position:relative;
   }
-  .card:active{transform:translate(4px,4px); box-shadow:2px 2px 0 var(--line);}
-  .card-title{font-family:'Archivo Black', sans-serif; font-size:19px; margin:0; text-transform:uppercase;}
-  .card-meta{font-family:'IBM Plex Mono', monospace; font-size:11px; margin-top:8px; color:#4A463F;}
-  .badge{
-    background:var(--coral); border:3px solid var(--line);
-    font-family:'IBM Plex Mono', monospace; font-size:10px; font-weight:700; padding:5px 9px; color:#fff;
-    flex-shrink:0; text-transform:uppercase;
+  .card:active{transform:translate(3px,3px); box-shadow:1px 1px 0 var(--line);}
+  .card:hover{background:var(--paper-hover);}
+
+  .card-top{display:flex; align-items:flex-start; justify-content:space-between; gap:8px;}
+  .card-title{
+    font-family:'Archivo Black', sans-serif;
+    font-size:17px;
+    text-transform:uppercase;
+    margin:0;
+    word-break:break-word;
+  }
+  .card-preview{
+    color:var(--ink-muted);
+    font-size:14px;
+    line-height:1.5;
+    margin-top:8px;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+  .card-meta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color:var(--ink-muted);
+    margin-top:10px;
+    letter-spacing:0.02em;
+  }
+  .pin-toggle{
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:4px;
+    color:var(--ink-faint);
+    flex-shrink:0;
+    display:flex;
+  }
+  .pin-toggle.pinned{color:var(--coral);}
+  .card-delete{
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:4px;
+    color:var(--ink-faint);
+    flex-shrink:0;
+  }
+  .card-delete:hover{color:var(--coral);}
+  .pinned-label, .section-label{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:10px; letter-spacing:0.06em;
+    text-transform:uppercase; color:#fff; background:var(--ink);
+    padding:4px 9px; margin:0 0 12px 0;
+  }
+  .section-label{margin:20px 0 12px 0;}
+  .section-label:first-child{margin-top:2px;}
+  .date-header{
+    display:inline-flex;
+    font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:10px; letter-spacing:0.04em;
+    background:var(--gold); border:2.5px solid var(--line);
+    padding:5px 9px; margin:20px 0 12px 0; text-transform:uppercase;
+    align-items:center; gap:8px;
+  }
+  .date-header:first-child{margin-top:2px;}
+  .date-header::after{content:none;}
+
+  .recent-row{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:28px;}
+  .recent-tile{
+    border:2.5px solid var(--line);
+    box-shadow:4px 4px 0 var(--line);
+    border-radius:0;
+    padding:13px 11px;
+    cursor:pointer;
+    transition:transform .08s, box-shadow .08s;
+    background:var(--paper);
+  }
+  .recent-tile:nth-child(3n+1){background:var(--gold);}
+  .recent-tile:nth-child(3n+2){background:var(--teal); color:#fff;}
+  .recent-tile:nth-child(3n+3){background:var(--lavender);}
+  .recent-tile:active{transform:translate(3px,3px); box-shadow:1px 1px 0 var(--line);}
+  .recent-tile:hover{filter:brightness(1.03);}
+  .recent-tile .rt-notebook{
+    font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:8px; letter-spacing:0.04em; text-transform:uppercase;
+  }
+  .recent-tile .rt-title{
+    font-family:'Archivo Black', sans-serif; font-size:12.5px; margin-top:8px; line-height:1.25; text-transform:uppercase;
+  }
+  .recent-tile .rt-meta{
+    font-family:'IBM Plex Mono', monospace; font-size:8.5px; margin-top:12px; opacity:0.75;
   }
 
   .fab{
-    margin-top:4px; display:inline-block;
+    position:fixed;
+    bottom:26px;
+    right:24px;
+    display:inline-flex; align-items:center; gap:6px;
     background:var(--ink); color:#fff;
-    border:4px solid var(--line); box-shadow:6px 6px 0 var(--coral);
-    font-family:'Archivo Black', sans-serif; font-size:13px; text-transform:uppercase;
-    padding:14px 22px; cursor:pointer;
+    border:3px solid var(--line);
+    box-shadow:5px 5px 0 var(--coral);
+    font-family:'IBM Plex Sans', sans-serif; font-weight:700; font-size:13.5px;
+    padding:13px 18px;
+    cursor:pointer;
+    z-index:20;
+    border-radius:0;
     transition:transform .08s, box-shadow .08s;
   }
-  .fab:active{transform:translate(4px,4px); box-shadow:2px 2px 0 var(--coral);}
+  .fab:active{transform:translate(3px,3px); box-shadow:1px 1px 0 var(--coral);}
 
-  /* Note screen */
-  .note-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;}
-  .note-title{font-family:'Archivo Black', sans-serif; font-size:22px; text-transform:uppercase;}
-  .icon-row{display:flex; gap:8px;}
-  .icon-box{
-    width:36px; height:36px; display:flex; align-items:center; justify-content:center;
-    background:var(--paper); border:3px solid var(--line);
-    font-size:15px; cursor:pointer;
+  #editorView{display:none; flex:1; flex-direction:column; padding-bottom:90px;}
+  #titleInput{
+    flex:1;
+    background:none;
+    border:none;
+    color:var(--ink);
+    font-family:'Archivo Black', sans-serif;
+    font-size:19px;
+    text-transform:uppercase;
+    outline:none;
+    min-width:0;
   }
-  .date-stamp{
-    display:inline-block;
-    font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:11px; letter-spacing:0.04em;
-    background:var(--yellow); border:3px solid var(--line);
-    padding:6px 10px; margin-bottom:16px; text-transform:uppercase;
-  }
+  #titleInput::placeholder{color:var(--ink-faint); text-transform:none; font-family:'IBM Plex Sans', sans-serif; font-weight:500;}
+  #blockList{padding:16px; display:flex; flex-direction:column; gap:0;}
+
   .block{
-    background:var(--paper); border:4px solid var(--line); box-shadow:6px 6px 0 var(--line);
-    padding:16px; margin-bottom:18px;
+    background:var(--paper);
+    border:3px solid var(--line);
+    box-shadow:5px 5px 0 var(--line);
+    border-radius:0;
+    padding:15px;
+    margin-bottom:16px;
+    position:relative;
   }
-  .block textarea{
-    width:100%; background:none; border:none; outline:none; color:var(--ink);
-    font-family:'IBM Plex Sans', sans-serif; font-size:16px; font-weight:500; line-height:1.6; resize:none;
+  .block-controls{
+    display:flex;
+    justify-content:flex-end;
+    gap:4px;
+    margin-bottom:6px;
   }
-  .audio-row{display:flex; align-items:center; gap:12px;}
-  .reel{
-    width:38px; height:38px; border:3px solid var(--line);
-    background:var(--teal); flex-shrink:0;
+  .block-controls button{
+    background:var(--bg-elevated);
+    border:2px solid var(--line);
+    color:var(--ink);
+    cursor:pointer;
+    padding:3px 6px;
+    border-radius:0;
+    font-size:12px;
+    display:flex;
+    align-items:center;
   }
-  .fake-audio{flex:1; height:32px; background:var(--bg); border:3px solid var(--line);}
-  .add-bar{display:flex; gap:8px; margin-top:22px;}
+  .block-controls button:hover{background:var(--gold);}
+
+  textarea.block-text{
+    width:100%;
+    background:none;
+    border:none;
+    outline:none;
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    font-weight:500;
+    font-size:17px;
+    line-height:1.65;
+    resize:none;
+    min-height:32px;
+    overflow:hidden;
+  }
+  textarea.block-text::placeholder{color:var(--ink-faint);}
+
+  .audio-block{display:flex; align-items:center; gap:12px;}
+  .reel-icon{width:34px;height:34px; flex-shrink:0; color:var(--ink); background:var(--teal); border:2.5px solid var(--line);}
+  audio{flex:1; height:34px;}
+
+  .media-block img, .media-block video{
+    width:100%;
+    border:2.5px solid var(--line);
+    display:block;
+  }
+  .yt-embed{
+    position:relative;
+    width:100%;
+    padding-top:56.25%;
+    border:2.5px solid var(--line);
+    overflow:hidden;
+    background:#000;
+  }
+  .yt-embed iframe{
+    position:absolute; top:0; left:0; width:100%; height:100%; border:none;
+  }
+
+  .add-bar{
+    position:fixed;
+    bottom:0; left:0; right:0;
+    background:var(--bg-elevated);
+    border-top:3px solid var(--line);
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom)) 14px;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    z-index:15;
+  }
+  .add-bar-inner{
+    max-width:640px;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    gap:7px;
+  }
   .add-btn{
-    flex:1; text-align:center; padding:12px 4px; background:var(--paper);
-    border:3px solid var(--line); box-shadow:4px 4px 0 var(--line);
-    font-family:'IBM Plex Sans', sans-serif; font-weight:700; font-size:10.5px; text-transform:uppercase;
-    cursor:pointer; transition:transform .08s, box-shadow .08s;
+    flex:1;
+    background:var(--paper);
+    border:2.5px solid var(--line);
+    box-shadow:3px 3px 0 var(--line);
+    color:var(--ink);
+    border-radius:0;
+    padding:11px 4px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    font-size:10px;
+    font-weight:600;
+    font-family:'IBM Plex Sans', sans-serif;
+    cursor:pointer;
+    transition:transform .08s, box-shadow .08s;
   }
-  .add-btn:active{transform:translate(3px,3px); box-shadow:1px 1px 0 var(--line);}
+  .add-btn svg{width:17px; height:17px;}
+  .add-btn:active{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--line);}
+
+  #recOverlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(13,12,10,0.94);
+    z-index:50;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:22px;
+  }
+  #recTimer{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:34px;
+    letter-spacing:0.05em;
+    color:#fff;
+  }
+  .rec-dot{
+    width:14px;height:14px;
+    background:var(--coral);
+    border:2px solid #fff;
+    animation:pulse 1.1s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);} 50%{opacity:.5; transform:scale(0.8);}}
+  #stopRecBtn{
+    width:74px;height:74px;
+    background:var(--coral);
+    border:3px solid #fff;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+  }
+  .rec-label{color:#D8D2C4; font-size:13px; letter-spacing:0.03em; font-family:'IBM Plex Mono', monospace;}
+
+  .modal-backdrop{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(13,12,10,0.65);
+    z-index:60;
+    align-items:flex-end;
+    justify-content:center;
+  }
+  .modal-sheet{
+    background:var(--paper);
+    border-top:3px solid var(--line);
+    padding:22px 20px calc(22px + env(safe-area-inset-bottom)) 20px;
+    width:100%;
+    max-width:640px;
+  }
+  .modal-sheet h3{
+    font-family:'Archivo Black', sans-serif;
+    font-size:17px;
+    text-transform:uppercase;
+    margin:0 0 14px 0;
+  }
+  .modal-sheet input{
+    width:100%;
+    background:var(--bg);
+    border:2.5px solid var(--line);
+    color:var(--ink);
+    padding:12px 14px;
+    border-radius:0;
+    font-size:15px;
+    outline:none;
+    margin-bottom:14px;
+  }
+  .modal-actions{display:flex; gap:10px;}
+  .btn{
+    flex:1;
+    padding:12px;
+    border-radius:0;
+    border:2.5px solid var(--line);
+    font-size:14px;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-weight:700;
+    cursor:pointer;
+    transition:transform .08s, box-shadow .08s;
+  }
+  .btn-primary{background:var(--gold); color:var(--ink); box-shadow:4px 4px 0 var(--line);}
+  .btn-primary:active{transform:translate(3px,3px); box-shadow:1px 1px 0 var(--line);}
+  .btn-ghost{background:var(--paper); color:var(--ink-muted);}
+  .header-actions{display:flex; gap:8px; align-items:center; margin-left:auto;}
+
+  .card.c1{background:var(--gold);}
+  .card.c2{background:var(--teal); color:#fff;}
+  .card.c3{background:var(--lavender);}
+  .card.c2 .card-meta, .card.c2 .card-preview{color:rgba(255,255,255,0.85);}
+  .card-pin-badge{
+    position:absolute; top:-8px; left:-8px;
+    background:var(--ink); color:#fff;
+    border:2px solid var(--line);
+    width:26px; height:26px;
+    display:flex; align-items:center; justify-content:center;
+    z-index:2;
+  }
+
+  .notes-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+  .grid-tile{
+    position:relative;
+    background:var(--paper);
+    border:2.5px solid var(--line);
+    box-shadow:4px 4px 0 var(--line);
+    padding:12px 10px;
+    cursor:pointer;
+    min-height:82px;
+    transition:transform .08s, box-shadow .08s;
+  }
+  .grid-tile:active{transform:translate(3px,3px); box-shadow:1px 1px 0 var(--line);}
+  .grid-tile:nth-child(3n+1){background:var(--gold);}
+  .grid-tile:nth-child(3n+2){background:var(--teal); color:#fff;}
+  .grid-tile:nth-child(3n+3){background:var(--lavender);}
+  .grid-tile .gt-title{
+    font-family:'Archivo Black', sans-serif; font-size:12px; text-transform:uppercase; line-height:1.25;
+  }
+  .grid-tile .gt-meta{
+    font-family:'IBM Plex Mono', monospace; font-size:8px; margin-top:10px; opacity:0.75;
+  }
+  .grid-tile .gt-pin{position:absolute; top:6px; right:6px;}
+
+  .view-toggle-active{background:var(--ink); color:#fff;}
+  input[type="file"]{display:none;}
 </style>
 </head>
 <body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <div id="app">
-  <div class="tabs">
-    <div class="tab active" data-target="home">HOME</div>
-    <div class="tab" data-target="note">NOTE</div>
+
+  <!-- HOME: notebooks -->
+  <div id="homeView-wrap">
+    <header>
+      <div class="brand">
+        <svg class="reel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/><circle cx="12" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="18" r="1.3" fill="currentColor" stroke="none"/><circle cx="7" cy="12" r="1.3" fill="currentColor" stroke="none"/></svg>
+        KITAAB
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="importBtn" aria-label="Import backup">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>
+        </button>
+        <button class="icon-btn" id="exportBtn" aria-label="Export backup">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v12M7 11l5 5 5-5"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>
+        </button>
+      </div>
+    </header>
+    <div id="homeList"></div>
+    <button class="fab" id="newNotebookBtn" aria-label="New notebook">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
   </div>
 
-  <div class="view active" id="home">
-    <h1 class="brand">Kitaab</h1>
-    <div class="section-label">Recent</div>
-    <div class="recent-row">
-      <div class="tile c1"><div class="t-notebook">Demobook</div><div class="t-title">Pin it</div><div class="t-meta">4m ago</div></div>
-      <div class="tile c2"><div class="t-notebook">Demobook</div><div class="t-title">Sample note</div><div class="t-meta">1h ago</div></div>
-      <div class="tile c3"><div class="t-notebook">Book2</div><div class="t-title">Chorus idea</div><div class="t-meta">Yesterday</div></div>
-    </div>
-    <div class="section-label">Notebooks</div>
-    <div class="card">
-      <div><div class="card-title">Demobook</div><div class="card-meta">2 notes</div></div>
-      <div class="badge">Open</div>
-    </div>
-    <div class="card">
-      <div><div class="card-title">Book2</div><div class="card-meta">0 notes</div></div>
-      <div class="badge">Open</div>
-    </div>
-    <div class="fab">+ New notebook</div>
+  <!-- NOTES within a notebook -->
+  <div id="notesView-wrap" style="display:none;">
+    <header>
+      <button class="icon-btn" id="notesBackBtn" aria-label="Back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="header-title" id="notebookTitleEl">Notebook</div>
+      <div class="header-actions">
+        <button class="icon-btn" id="listViewBtn" aria-label="List view">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <button class="icon-btn" id="gridViewBtn" aria-label="Grid view">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </button>
+      </div>
+    </header>
+    <div id="notesList"></div>
+    <button class="fab" id="newNoteBtn" aria-label="New note">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
   </div>
 
-  <div class="view" id="note">
-    <div class="note-header">
-      <div class="note-title">Pin it</div>
-      <div class="icon-row">
-        <div class="icon-box">★</div>
-        <div class="icon-box">🗑</div>
-      </div>
-    </div>
-    <div class="date-stamp">July 13th · 8:21am</div>
-    <div class="block">
-      <textarea readonly>Verse 1 — walking home under gold streetlight,
-feels like the whole city's holding its breath tonight...</textarea>
-    </div>
-    <div class="block">
-      <div class="audio-row">
-        <div class="reel"></div>
-        <div class="fake-audio"></div>
-      </div>
-    </div>
-    <div class="add-bar">
-      <div class="add-btn">Text</div>
-      <div class="add-btn">Record</div>
-      <div class="add-btn">Photo</div>
-      <div class="add-btn">Video</div>
-      <div class="add-btn">YT</div>
+  <!-- EDITOR -->
+  <div id="editorView">
+    <header>
+      <button class="icon-btn" id="backBtn" aria-label="Back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <input id="titleInput" placeholder="Untitled note" />
+      <button class="icon-btn" id="pinNoteBtn" aria-label="Pin note">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 10.76V4.5a1 1 0 011-1h4a1 1 0 011 1v6.26a2 2 0 001.11 1.79l1.78.9a2 2 0 011.11 1.79V16a1 1 0 01-1 1H6a1 1 0 01-1-1v-1.76a2 2 0 011.11-1.79l1.78-.9A2 2 0 009 10.76z"/></svg>
+      </button>
+      <button class="icon-btn" id="deleteNoteBtn" aria-label="Delete note">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+      </button>
+    </header>
+    <div id="blockList"></div>
+  </div>
+
+  <!-- ADD BLOCK BAR -->
+  <div class="add-bar" id="addBar" style="display:none;">
+    <div class="add-bar-inner">
+      <button class="add-btn" id="addTextBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+        Text
+      </button>
+      <button class="add-btn" id="addAudioBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15a3 3 0 003-3V6a3 3 0 10-6 0v6a3 3 0 003 3z"/><path d="M19 11a7 7 0 01-14 0M12 18v3"/></svg>
+        Record
+      </button>
+      <button class="add-btn" id="addPhotoBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 16l-5-5-9 9"/></svg>
+        Photo
+      </button>
+      <button class="add-btn" id="addVideoBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="12" height="12" rx="2"/><path d="M15 10l6-3v10l-6-3"/></svg>
+        Video
+      </button>
+      <button class="add-btn" id="addYtBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"/></svg>
+        YouTube
+      </button>
     </div>
   </div>
+
+  <!-- RECORDING OVERLAY -->
+  <div id="recOverlay">
+    <div class="rec-dot"></div>
+    <div id="recTimer">00:00</div>
+    <div class="rec-label">Recording… tap to stop</div>
+    <button id="stopRecBtn" aria-label="Stop recording">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+    </button>
+  </div>
+
+  <!-- YOUTUBE MODAL -->
+  <div class="modal-backdrop" id="ytModal">
+    <div class="modal-sheet">
+      <h3>Paste a YouTube link</h3>
+      <input id="ytUrlInput" placeholder="https://youtube.com/watch?v=..." />
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="ytCancelBtn">Cancel</button>
+        <button class="btn btn-primary" id="ytAddBtn">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW NOTEBOOK MODAL -->
+  <div class="modal-backdrop" id="nbModal">
+    <div class="modal-sheet">
+      <h3>New notebook</h3>
+      <input id="nbNameInput" placeholder="e.g. Song Lyrics, Ideas, Journal" />
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="nbCancelBtn">Cancel</button>
+        <button class="btn btn-primary" id="nbAddBtn">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="photoInput" accept="image/*">
+  <input type="file" id="videoInput" accept="video/*">
+  <input type="file" id="importInput" accept="application/json">
 </div>
+
 <script>
-  document.querySelectorAll('.tab').forEach(tab=>{
-    tab.addEventListener('click', ()=>{
-      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-      tab.classList.add('active');
-      document.getElementById(tab.dataset.target).classList.add('active');
+/* ================= DB LAYER (Supabase) ================= */
+const SUPABASE_URL = 'https://tgltsdvtjpbctmjgvgng.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_0JK-c4icswbaJEE9_1ALSg_8jeikVAB';
+let sb;
+
+function openDB(){
+  return new Promise((resolve, reject) => {
+    try{
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      resolve();
+    } catch(e){ reject(e); }
+  });
+}
+
+function rowToNote(row){
+  return {
+    id: row.id,
+    notebookId: row.notebook_id,
+    title: row.title || '',
+    pinned: !!row.pinned,
+    blocks: row.blocks || [],
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  };
+}
+function noteToRow(note){
+  return {
+    id: note.id,
+    notebook_id: note.notebookId,
+    title: note.title || '',
+    pinned: !!note.pinned,
+    blocks: note.blocks || [],
+    created_at: note.createdAt,
+    updated_at: note.updatedAt
+  };
+}
+function rowToNotebook(row){
+  return { id: row.id, name: row.name, createdAt: row.created_at, updatedAt: row.updated_at };
+}
+function notebookToRow(nb){
+  return { id: nb.id, name: nb.name, created_at: nb.createdAt, updated_at: nb.updatedAt };
+}
+
+async function saveNote(note){
+  const { error } = await sb.from('notes').upsert(noteToRow(note));
+  if(error) throw error;
+}
+async function getAllNotes(){
+  const { data, error } = await sb.from('notes').select('*');
+  if(error) throw error;
+  return (data || []).map(rowToNote);
+}
+async function deleteNoteDB(id){
+  const { error } = await sb.from('notes').delete().eq('id', id);
+  if(error) throw error;
+}
+async function saveMedia(id, blob){
+  const dataUrl = await blobToDataURL(blob);
+  const { error } = await sb.from('media').upsert({ id, data: dataUrl, mime_type: blob.type });
+  if(error) throw error;
+}
+async function getMedia(id){
+  const { data, error } = await sb.from('media').select('*').eq('id', id).maybeSingle();
+  if(error) throw error;
+  if(!data) return null;
+  const res = await fetch(data.data);
+  return await res.blob();
+}
+async function deleteMediaDB(id){
+  const { error } = await sb.from('media').delete().eq('id', id);
+  if(error) throw error;
+}
+async function saveNotebook(nb){
+  const { error } = await sb.from('notebooks').upsert(notebookToRow(nb));
+  if(error) throw error;
+}
+async function getAllNotebooks(){
+  const { data, error } = await sb.from('notebooks').select('*');
+  if(error) throw error;
+  return (data || []).map(rowToNotebook);
+}
+async function deleteNotebookDB(id){
+  const { error } = await sb.from('notebooks').delete().eq('id', id);
+  if(error) throw error;
+}
+
+/* ================= STATE ================= */
+let notebooks = [];
+let notes = [];
+let currentNotebookId = null;
+let currentNote = null;
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str || '';
+  return d.innerHTML;
+}
+function formatRelativeDate(ts){
+  const diff = Date.now() - ts;
+  const min = Math.floor(diff/60000);
+  if(min < 1) return 'Just now';
+  if(min < 60) return min + 'm ago';
+  const hr = Math.floor(min/60);
+  if(hr < 24) return hr + 'h ago';
+  const day = Math.floor(hr/24);
+  if(day === 1) return 'Yesterday';
+  if(day < 7) return day + 'd ago';
+  return new Date(ts).toLocaleDateString([], {day:'numeric', month:'short'});
+}
+function ordinal(n){
+  const s = ["th","st","nd","rd"];
+  const v = n % 100;
+  return n + (s[(v-20)%10] || s[v] || s[0]);
+}
+function formatDateHeader(ts){
+  const d = new Date(ts);
+  const month = d.toLocaleString([], {month:'long'});
+  const day = d.getDate();
+  const year = d.getFullYear();
+  return `Edited - ${day}${month}${year}`;
+}
+function dayKey(ts){
+  const d = new Date(ts);
+  return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
+}
+
+/* ================= VIEW ELEMENTS ================= */
+const homeViewWrap = document.getElementById('homeView-wrap');
+const notesViewWrap = document.getElementById('notesView-wrap');
+const editorView = document.getElementById('editorView');
+const addBar = document.getElementById('addBar');
+const homeList = document.getElementById('homeList');
+const notesList = document.getElementById('notesList');
+const notebookTitleEl = document.getElementById('notebookTitleEl');
+
+function showHome(){
+  homeViewWrap.style.display = 'block';
+  notesViewWrap.style.display = 'none';
+  editorView.style.display = 'none';
+  addBar.style.display = 'none';
+  currentNotebookId = null;
+  currentNote = null;
+  renderHome();
+}
+function showNotes(notebookId){
+  currentNotebookId = notebookId;
+  homeViewWrap.style.display = 'none';
+  notesViewWrap.style.display = 'block';
+  editorView.style.display = 'none';
+  addBar.style.display = 'none';
+  renderNotes();
+}
+function showEditor(){
+  homeViewWrap.style.display = 'none';
+  notesViewWrap.style.display = 'none';
+  editorView.style.display = 'flex';
+  addBar.style.display = 'flex';
+}
+
+/* ================= HOME (NOTEBOOKS) ================= */
+const PIN_SVG = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 10.76V4.5a1 1 0 011-1h4a1 1 0 011 1v6.26a2 2 0 001.11 1.79l1.78.9a2 2 0 011.11 1.79V16a1 1 0 01-1 1H6a1 1 0 01-1-1v-1.76a2 2 0 011.11-1.79l1.78-.9A2 2 0 009 10.76z"/></svg>';
+
+function makeHomeTile(note, notebookById){
+  const nb = notebookById[note.notebookId];
+  const tile = document.createElement('div');
+  tile.className = 'recent-tile';
+  tile.style.position = 'relative';
+  tile.innerHTML = `
+    ${note.pinned ? `<div class="card-pin-badge" style="width:20px;height:20px;">${PIN_SVG}</div>` : ''}
+    <div class="rt-notebook">${escapeHtml(nb ? nb.name : 'Notebook')}</div>
+    <div class="rt-title">${escapeHtml(note.title || 'Untitled note')}</div>
+    <div class="rt-meta">${formatRelativeDate(note.updatedAt)}</div>
+  `;
+  tile.addEventListener('click', () => {
+    currentNotebookId = note.notebookId;
+    openNote(note.id);
+  });
+  return tile;
+}
+
+async function renderHome(){
+  try{
+    notebooks = await getAllNotebooks();
+    notes = await getAllNotes();
+  } catch(err){
+    console.error('renderHome error:', err);
+    homeList.innerHTML = `<div class="empty-state">
+      <div class="big">Couldn't load your data.</div>
+      <div>${escapeHtml(err.message || String(err))}</div>
+    </div>`;
+    return;
+  }
+  notebooks.sort((a,b) => b.updatedAt - a.updatedAt);
+  homeList.innerHTML = '';
+
+  const notebookById = {};
+  notebooks.forEach(nb => notebookById[nb.id] = nb);
+
+  const pinnedNotes = notes.filter(n => n.pinned).sort((a,b) => b.updatedAt - a.updatedAt);
+  const nonPinned = notes.filter(n => !n.pinned).sort((a,b) => b.updatedAt - a.updatedAt);
+  const combined = [...pinnedNotes, ...nonPinned].slice(0, 3);
+
+  if(combined.length){
+    const label = document.createElement('div');
+    label.className = 'section-label';
+    label.textContent = 'Recent';
+    homeList.appendChild(label);
+
+    const row = document.createElement('div');
+    row.className = 'recent-row';
+    combined.forEach(note => row.appendChild(makeHomeTile(note, notebookById)));
+    homeList.appendChild(row);
+  }
+
+  const nbLabel = document.createElement('div');
+  nbLabel.className = 'section-label';
+  nbLabel.textContent = 'Notebooks';
+  homeList.appendChild(nbLabel);
+
+  if(notebooks.length === 0){
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.innerHTML = `<div class="big">No notebooks yet.</div><div>Tap + to create your first notebook.</div>`;
+    homeList.appendChild(empty);
+    return;
+  }
+  notebooks.forEach(nb => {
+    const count = notes.filter(n => n.notebookId === nb.id).length;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-top">
+        <h3 class="card-title">${escapeHtml(nb.name)}</h3>
+        <button class="card-delete" data-id="${nb.id}" aria-label="Delete notebook">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+        </button>
+      </div>
+      <div class="card-meta">${count} note${count!==1?'s':''}</div>
+    `;
+    card.addEventListener('click', () => showNotes(nb.id));
+    card.querySelector('.card-delete').addEventListener('click', async (e) => {
+      e.stopPropagation();
+      if(confirm(`Delete notebook "${nb.name}" and all its notes? This cannot be undone.`)){
+        const nbNotes = notes.filter(n => n.notebookId === nb.id);
+        for(const n of nbNotes){
+          for(const b of n.blocks){
+            if(b.mediaId) await deleteMediaDB(b.mediaId);
+          }
+          await deleteNoteDB(n.id);
+        }
+        await deleteNotebookDB(nb.id);
+        renderHome();
+      }
+    });
+    homeList.appendChild(card);
+  });
+}
+
+/* ================= BACKUP: EXPORT / IMPORT ================= */
+function blobToDataURL(blob){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function exportBackup(){
+  const allNotebooks = await getAllNotebooks();
+  const allNotes = await getAllNotes();
+  const mediaIds = new Set();
+  allNotes.forEach(n => n.blocks.forEach(b => { if(b.mediaId) mediaIds.add(b.mediaId); }));
+  const mediaEntries = [];
+  for(const id of mediaIds){
+    const blob = await getMedia(id);
+    if(blob){
+      const dataUrl = await blobToDataURL(blob);
+      mediaEntries.push({id, dataUrl});
+    }
+  }
+  const payload = {
+    app:'KITAAB',
+    backupVersion:1,
+    exportedAt:Date.now(),
+    notebooks:allNotebooks,
+    notes:allNotes,
+    media:mediaEntries
+  };
+  const blob = new Blob([JSON.stringify(payload)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const d = new Date();
+  const stamp = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  a.href = url;
+  a.download = 'kitaab-backup-' + stamp + '.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function importBackup(file){
+  try{
+    const text = await file.text();
+    const payload = JSON.parse(text);
+    if(!payload || !Array.isArray(payload.notebooks) || !Array.isArray(payload.notes)){
+      alert('This file doesn\'t look like a valid KITAAB backup.');
+      return;
+    }
+    for(const nb of payload.notebooks){ await saveNotebook(nb); }
+    for(const n of payload.notes){
+      if(typeof n.pinned === 'undefined') n.pinned = false;
+      await saveNote(n);
+    }
+    if(Array.isArray(payload.media)){
+      for(const m of payload.media){
+        const res = await fetch(m.dataUrl);
+        const blob = await res.blob();
+        await saveMedia(m.id, blob);
+      }
+    }
+    alert('Backup restored — your notebooks and notes are back.');
+    showHome();
+  } catch(err){
+    alert('Could not read that backup file. Make sure it\'s an unmodified KITAAB export.');
+  }
+}
+
+document.getElementById('exportBtn').addEventListener('click', exportBackup);
+document.getElementById('importBtn').addEventListener('click', () => {
+  document.getElementById('importInput').click();
+});
+document.getElementById('importInput').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  await importBackup(file);
+  e.target.value = '';
+});
+
+document.getElementById('newNotebookBtn').addEventListener('click', () => {
+  document.getElementById('nbNameInput').value = '';
+  document.getElementById('nbModal').style.display = 'flex';
+  document.getElementById('nbNameInput').focus();
+});
+document.getElementById('nbCancelBtn').addEventListener('click', () => {
+  document.getElementById('nbModal').style.display = 'none';
+});
+document.getElementById('nbAddBtn').addEventListener('click', async () => {
+  const name = document.getElementById('nbNameInput').value.trim();
+  if(!name) return;
+  const nb = {id:uid(), name, createdAt:Date.now(), updatedAt:Date.now()};
+  await saveNotebook(nb);
+  document.getElementById('nbModal').style.display = 'none';
+  renderHome();
+});
+
+/* ================= NOTES LIST (within notebook) ================= */
+function blockPreviewIcon(type){
+  if(type==='audio') return '🎙️';
+  if(type==='image') return '🖼️';
+  if(type==='video') return '🎬';
+  if(type==='youtube') return '▶️';
+  return '';
+}
+
+let notesViewMode = 'list';
+
+async function renderNotes(){
+  notebooks = await getAllNotebooks();
+  const nb = notebooks.find(n => n.id === currentNotebookId);
+  notebookTitleEl.textContent = nb ? nb.name : 'Notebook';
+  notes = await getAllNotes();
+  const scoped = notes.filter(n => n.notebookId === currentNotebookId);
+  const pinned = scoped.filter(n => n.pinned).sort((a,b) => b.updatedAt - a.updatedAt);
+  const rest = scoped.filter(n => !n.pinned).sort((a,b) => b.updatedAt - a.updatedAt);
+
+  document.getElementById('listViewBtn').classList.toggle('view-toggle-active', notesViewMode==='list');
+  document.getElementById('gridViewBtn').classList.toggle('view-toggle-active', notesViewMode==='grid');
+
+  notesList.innerHTML = '';
+  if(scoped.length === 0){
+    notesList.innerHTML = `<div class="empty-state">
+      <div class="big">A blank page, waiting.</div>
+      <div>Tap + to start your first note.</div>
+    </div>`;
+    return;
+  }
+
+  if(notesViewMode === 'grid'){
+    const grid = document.createElement('div');
+    grid.className = 'notes-grid';
+    const ordered = [...pinned, ...rest];
+    ordered.forEach(n => grid.appendChild(makeGridTile(n)));
+    notesList.appendChild(grid);
+    return;
+  }
+
+  let idx = 0;
+  if(pinned.length){
+    const label = document.createElement('div');
+    label.className = 'pinned-label';
+    label.textContent = 'Pinned';
+    notesList.appendChild(label);
+    pinned.forEach(n => { notesList.appendChild(makeNoteCard(n, idx)); idx++; });
+  }
+  rest.forEach(n => { notesList.appendChild(makeNoteCard(n, idx)); idx++; });
+}
+
+function makeGridTile(note){
+  const tile = document.createElement('div');
+  tile.className = 'grid-tile';
+  tile.innerHTML = `
+    ${note.pinned ? `<div class="gt-pin">${PIN_SVG}</div>` : ''}
+    <div class="gt-title">${escapeHtml(note.title || 'Untitled note')}</div>
+    <div class="gt-meta">${formatRelativeDate(note.updatedAt)}</div>
+  `;
+  tile.addEventListener('click', () => openNote(note.id));
+  return tile;
+}
+
+function makeNoteCard(note, idx){
+  const firstText = note.blocks.find(b => b.type==='text' && b.content && b.content.trim());
+  const firstMedia = note.blocks.find(b => b.type !== 'text');
+  let preview = '';
+  if(firstText){
+    preview = firstText.content.trim().slice(0,140);
+  } else if(firstMedia){
+    preview = blockPreviewIcon(firstMedia.type) + ' ' + firstMedia.type.charAt(0).toUpperCase()+firstMedia.type.slice(1);
+  } else {
+    preview = 'Empty note';
+  }
+  const card = document.createElement('div');
+  card.className = 'card c' + ((idx % 3) + 1);
+  card.innerHTML = `
+    <div class="card-top">
+      <h3 class="card-title">${escapeHtml(note.title || 'Untitled note')}</h3>
+      <button class="pin-toggle ${note.pinned?'pinned':''}" data-id="${note.id}" aria-label="Pin note">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="${note.pinned?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 10.76V4.5a1 1 0 011-1h4a1 1 0 011 1v6.26a2 2 0 001.11 1.79l1.78.9a2 2 0 011.11 1.79V16a1 1 0 01-1 1H6a1 1 0 01-1-1v-1.76a2 2 0 011.11-1.79l1.78-.9A2 2 0 009 10.76z"/></svg>
+      </button>
+    </div>
+    <div class="card-preview">${escapeHtml(preview)}</div>
+    <div class="card-meta">${new Date(note.updatedAt).toLocaleString([], {dateStyle:'medium', timeStyle:'short'})} · ${note.blocks.length} block${note.blocks.length!==1?'s':''}</div>
+  `;
+  card.addEventListener('click', () => openNote(note.id));
+  card.querySelector('.pin-toggle').addEventListener('click', async (e) => {
+    e.stopPropagation();
+    note.pinned = !note.pinned;
+    note.updatedAt = Date.now();
+    await saveNote(note);
+    renderNotes();
+  });
+  return card;
+}
+
+document.getElementById('notesBackBtn').addEventListener('click', showHome);
+document.getElementById('newNoteBtn').addEventListener('click', newNote);
+document.getElementById('listViewBtn').addEventListener('click', () => { notesViewMode = 'list'; renderNotes(); });
+document.getElementById('gridViewBtn').addEventListener('click', () => { notesViewMode = 'grid'; renderNotes(); });
+
+/* ================= NOTE EDITOR ================= */
+const titleInput = document.getElementById('titleInput');
+const blockListEl = document.getElementById('blockList');
+const pinNoteBtn = document.getElementById('pinNoteBtn');
+
+async function openNote(id){
+  const all = await getAllNotes();
+  currentNote = all.find(n => n.id === id);
+  if(!currentNote) return;
+  titleInput.value = currentNote.title || '';
+  updatePinBtn();
+  showEditor();
+  await renderBlocks();
+}
+
+async function newNote(){
+  currentNote = {
+    id: uid(),
+    notebookId: currentNotebookId,
+    title: '',
+    blocks: [],
+    pinned: false,
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  };
+  await saveNote(currentNote);
+  titleInput.value = '';
+  updatePinBtn();
+  showEditor();
+  await renderBlocks();
+  titleInput.focus();
+}
+
+function updatePinBtn(){
+  pinNoteBtn.classList.toggle('active', !!currentNote.pinned);
+  const svgPath = pinNoteBtn.querySelector('svg');
+  svgPath.setAttribute('fill', currentNote.pinned ? 'currentColor' : 'none');
+}
+
+pinNoteBtn.addEventListener('click', async () => {
+  currentNote.pinned = !currentNote.pinned;
+  updatePinBtn();
+  await persistNote();
+});
+
+async function persistNote(){
+  currentNote.updatedAt = Date.now();
+  await saveNote(currentNote);
+}
+
+titleInput.addEventListener('input', async () => {
+  currentNote.title = titleInput.value;
+  await persistNote();
+});
+
+document.getElementById('backBtn').addEventListener('click', () => showNotes(currentNotebookId));
+
+document.getElementById('deleteNoteBtn').addEventListener('click', async () => {
+  if(!currentNote) return;
+  if(confirm('Delete this note? This cannot be undone.')){
+    for(const b of currentNote.blocks){
+      if(b.mediaId) await deleteMediaDB(b.mediaId);
+    }
+    await deleteNoteDB(currentNote.id);
+    showNotes(currentNotebookId);
+  }
+});
+
+async function renderBlocks(){
+  blockListEl.innerHTML = '';
+  const blocks = currentNote.blocks;
+  let i = 0;
+  while(i < blocks.length){
+    const startKey = dayKey(blocks[i].ts || currentNote.createdAt);
+    let j = i;
+    let maxTs = blocks[i].ts || currentNote.createdAt;
+    while(j < blocks.length && dayKey(blocks[j].ts || currentNote.createdAt) === startKey){
+      maxTs = Math.max(maxTs, blocks[j].ts || currentNote.createdAt);
+      j++;
+    }
+    const header = document.createElement('div');
+    header.className = 'date-header';
+    header.textContent = formatDateHeader(maxTs);
+    blockListEl.appendChild(header);
+    for(let k=i; k<j; k++){
+      const el = await renderBlock(blocks[k], k);
+      blockListEl.appendChild(el);
+    }
+    i = j;
+  }
+}
+
+function blockControls(index){
+  const total = currentNote.blocks.length;
+  return `
+    <div class="block-controls">
+      ${index>0 ? `<button data-action="up" data-index="${index}">↑</button>` : ''}
+      ${index<total-1 ? `<button data-action="down" data-index="${index}">↓</button>` : ''}
+      <button data-action="delete" data-index="${index}">✕</button>
+    </div>
+  `;
+}
+
+async function renderBlock(block, index){
+  const wrap = document.createElement('div');
+  wrap.className = 'block';
+
+  if(block.type === 'text'){
+    wrap.innerHTML = blockControls(index) + `<textarea class="block-text" placeholder="Write lyrics or notes…">${escapeHtml(block.content||'')}</textarea>`;
+    const ta = wrap.querySelector('textarea');
+    autoGrow(ta);
+    ta.addEventListener('input', async () => {
+      block.content = ta.value;
+      block.ts = Date.now();
+      autoGrow(ta);
+      await persistNote();
+    });
+  }
+  else if(block.type === 'audio'){
+    const blob = await getMedia(block.mediaId);
+    const url = blob ? URL.createObjectURL(blob) : '';
+    wrap.innerHTML = blockControls(index) + `
+      <div class="audio-block">
+        <svg class="reel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="12" cy="6" r="1.1" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="18" r="1.1" fill="currentColor" stroke="none"/><circle cx="7" cy="12" r="1.1" fill="currentColor" stroke="none"/></svg>
+        <audio controls src="${url}"></audio>
+      </div>
+    `;
+  }
+  else if(block.type === 'image'){
+    const blob = await getMedia(block.mediaId);
+    const url = blob ? URL.createObjectURL(blob) : '';
+    wrap.innerHTML = blockControls(index) + `<div class="media-block"><img src="${url}" alt="photo"/></div>`;
+  }
+  else if(block.type === 'video'){
+    const blob = await getMedia(block.mediaId);
+    const url = blob ? URL.createObjectURL(blob) : '';
+    wrap.innerHTML = blockControls(index) + `<div class="media-block"><video controls src="${url}"></video></div>`;
+  }
+  else if(block.type === 'youtube'){
+    wrap.innerHTML = blockControls(index) + `
+      <div class="yt-embed">
+        <iframe src="https://www.youtube.com/embed/${block.videoId}" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+      </div>
+    `;
+  }
+
+  wrap.querySelectorAll('.block-controls button').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const action = btn.dataset.action;
+      const idx = parseInt(btn.dataset.index, 10);
+      if(action === 'delete'){
+        const removed = currentNote.blocks[idx];
+        if(removed.mediaId) await deleteMediaDB(removed.mediaId);
+        currentNote.blocks.splice(idx,1);
+      } else if(action === 'up'){
+        [currentNote.blocks[idx-1], currentNote.blocks[idx]] = [currentNote.blocks[idx], currentNote.blocks[idx-1]];
+      } else if(action === 'down'){
+        [currentNote.blocks[idx+1], currentNote.blocks[idx]] = [currentNote.blocks[idx], currentNote.blocks[idx+1]];
+      }
+      await persistNote();
+      await renderBlocks();
     });
   });
+
+  return wrap;
+}
+
+function autoGrow(ta){
+  ta.style.height = 'auto';
+  ta.style.height = (ta.scrollHeight) + 'px';
+}
+
+/* ================= ADD BLOCKS ================= */
+document.getElementById('addTextBtn').addEventListener('click', async () => {
+  currentNote.blocks.push({id:uid(), type:'text', content:'', ts:Date.now()});
+  await persistNote();
+  await renderBlocks();
+  const textareas = blockListEl.querySelectorAll('textarea');
+  if(textareas.length) textareas[textareas.length-1].focus();
+});
+
+document.getElementById('addPhotoBtn').addEventListener('click', () => {
+  document.getElementById('photoInput').click();
+});
+document.getElementById('photoInput').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const mediaId = uid();
+  await saveMedia(mediaId, file);
+  currentNote.blocks.push({id:uid(), type:'image', mediaId, ts:Date.now()});
+  await persistNote();
+  await renderBlocks();
+  e.target.value = '';
+});
+
+document.getElementById('addVideoBtn').addEventListener('click', () => {
+  document.getElementById('videoInput').click();
+});
+document.getElementById('videoInput').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const mediaId = uid();
+  await saveMedia(mediaId, file);
+  currentNote.blocks.push({id:uid(), type:'video', mediaId, ts:Date.now()});
+  await persistNote();
+  await renderBlocks();
+  e.target.value = '';
+});
+
+const ytModal = document.getElementById('ytModal');
+document.getElementById('addYtBtn').addEventListener('click', () => {
+  document.getElementById('ytUrlInput').value = '';
+  ytModal.style.display = 'flex';
+});
+document.getElementById('ytCancelBtn').addEventListener('click', () => {
+  ytModal.style.display = 'none';
+});
+document.getElementById('ytAddBtn').addEventListener('click', async () => {
+  const url = document.getElementById('ytUrlInput').value.trim();
+  const videoId = extractYouTubeId(url);
+  if(!videoId){
+    alert('Could not recognize a YouTube link. Try pasting the full URL.');
+    return;
+  }
+  currentNote.blocks.push({id:uid(), type:'youtube', videoId, url, ts:Date.now()});
+  await persistNote();
+  await renderBlocks();
+  ytModal.style.display = 'none';
+});
+
+function extractYouTubeId(url){
+  const patterns = [
+    /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/
+  ];
+  for(const p of patterns){
+    const m = url.match(p);
+    if(m) return m[1];
+  }
+  return null;
+}
+
+/* -------- Audio recording -------- */
+let mediaRecorder;
+let recordedChunks = [];
+let recStartTime;
+let recTimerInterval;
+const recOverlay = document.getElementById('recOverlay');
+const recTimerEl = document.getElementById('recTimer');
+
+document.getElementById('addAudioBtn').addEventListener('click', startRecording);
+document.getElementById('stopRecBtn').addEventListener('click', stopRecording);
+
+async function startRecording(){
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    recordedChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = (e) => { if(e.data.size>0) recordedChunks.push(e.data); };
+    mediaRecorder.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop());
+      const blob = new Blob(recordedChunks, {type:'audio/webm'});
+      const mediaId = uid();
+      await saveMedia(mediaId, blob);
+      currentNote.blocks.push({id:uid(), type:'audio', mediaId, ts:Date.now()});
+      await persistNote();
+      await renderBlocks();
+    };
+    mediaRecorder.start();
+    recStartTime = Date.now();
+    recOverlay.style.display = 'flex';
+    recTimerInterval = setInterval(updateRecTimer, 250);
+  } catch(err){
+    alert('Could not access the microphone. Please allow microphone permission for this app/site.');
+  }
+}
+
+function updateRecTimer(){
+  const elapsed = Math.floor((Date.now()-recStartTime)/1000);
+  const mm = String(Math.floor(elapsed/60)).padStart(2,'0');
+  const ss = String(elapsed%60).padStart(2,'0');
+  recTimerEl.textContent = mm + ':' + ss;
+}
+
+function stopRecording(){
+  if(mediaRecorder && mediaRecorder.state !== 'inactive'){
+    mediaRecorder.stop();
+  }
+  clearInterval(recTimerInterval);
+  recOverlay.style.display = 'none';
+}
+
+/* ================= INIT + MIGRATION ================= */
+async function migrateOrphanNotes(){
+  const allNotes = await getAllNotes();
+  const orphans = allNotes.filter(n => !n.notebookId);
+  if(orphans.length === 0) return;
+  const general = {id:uid(), name:'General', createdAt:Date.now(), updatedAt:Date.now()};
+  await saveNotebook(general);
+  for(const n of orphans){
+    n.notebookId = general.id;
+    if(typeof n.pinned === 'undefined') n.pinned = false;
+    await saveNote(n);
+  }
+}
+
+(async function init(){
+  try{
+    await openDB();
+    await migrateOrphanNotes();
+  } catch(err){
+    console.error('KITAAB init error:', err);
+    homeList.innerHTML = `<div class="empty-state">
+      <div class="big">Couldn't connect to the database.</div>
+      <div>${escapeHtml(err.message || String(err))}</div>
+      <div style="margin-top:10px; font-size:12px;">If you're viewing this inside a chat preview, open the real hosted link instead — some preview sandboxes block outside network calls.</div>
+    </div>`;
+  }
+  showHome();
+})();
 </script>
 </body>
 </html>
