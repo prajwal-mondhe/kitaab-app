@@ -63,8 +63,10 @@
     display:flex;
     align-items:center;
     gap:9px;
+    flex:1;
+    min-width:0;
   }
-  .brand .reel{width:22px;height:22px;flex-shrink:0;}
+  .brand .reel{flex:1; height:19px; min-width:60px; max-width:220px;}
   .header-title{
     font-family:'Archivo Black', sans-serif;
     font-size:17px;
@@ -518,17 +520,10 @@
   <div id="homeView-wrap">
     <header>
       <div class="brand">
-        <svg class="reel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/><circle cx="12" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="18" r="1.3" fill="currentColor" stroke="none"/><circle cx="7" cy="12" r="1.3" fill="currentColor" stroke="none"/></svg>
         KITAAB
       </div>
       <div class="header-actions">
         <span class="sync-status" id="syncStatus">●&nbsp;Synced</span>
-        <button class="icon-btn" id="importBtn" aria-label="Import backup">
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>
-        </button>
-        <button class="icon-btn" id="exportBtn" aria-label="Export backup">
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v12M7 11l5 5 5-5"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>
-        </button>
       </div>
     </header>
     <div class="search-bar-wrap">
@@ -546,6 +541,9 @@
     <header>
       <button class="icon-btn" id="notesBackBtn" aria-label="Back">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="icon-btn" id="notesHomeBtn" aria-label="Go to home">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
       </button>
       <div class="header-title" id="notebookTitleEl">Notebook</div>
       <div class="header-actions">
@@ -568,6 +566,9 @@
     <header>
       <button class="icon-btn" id="backBtn" aria-label="Back">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="icon-btn" id="editorHomeBtn" aria-label="Go to home">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
       </button>
       <input id="titleInput" placeholder="Untitled note" />
       <button class="icon-btn" id="pinNoteBtn" aria-label="Pin note">
@@ -649,7 +650,6 @@
 
   <input type="file" id="photoInput" accept="image/*">
   <input type="file" id="videoInput" accept="video/*">
-  <input type="file" id="importInput" accept="application/json">
 </div>
 
 <script>
@@ -994,78 +994,6 @@ function blobToDataURL(blob){
   });
 }
 
-async function exportBackup(){
-  const allNotebooks = await getAllNotebooks();
-  const allNotes = await getAllNotes();
-  const mediaIds = new Set();
-  allNotes.forEach(n => n.blocks.forEach(b => { if(b.mediaId) mediaIds.add(b.mediaId); }));
-  const mediaEntries = [];
-  for(const id of mediaIds){
-    const blob = await getMedia(id);
-    if(blob){
-      const dataUrl = await blobToDataURL(blob);
-      mediaEntries.push({id, dataUrl});
-    }
-  }
-  const payload = {
-    app:'KITAAB',
-    backupVersion:1,
-    exportedAt:Date.now(),
-    notebooks:allNotebooks,
-    notes:allNotes,
-    media:mediaEntries
-  };
-  const blob = new Blob([JSON.stringify(payload)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  const d = new Date();
-  const stamp = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-  a.href = url;
-  a.download = 'kitaab-backup-' + stamp + '.json';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
-
-async function importBackup(file){
-  try{
-    const text = await file.text();
-    const payload = JSON.parse(text);
-    if(!payload || !Array.isArray(payload.notebooks) || !Array.isArray(payload.notes)){
-      alert('This file doesn\'t look like a valid KITAAB backup.');
-      return;
-    }
-    for(const nb of payload.notebooks){ await saveNotebook(nb); }
-    for(const n of payload.notes){
-      if(typeof n.pinned === 'undefined') n.pinned = false;
-      await saveNote(n);
-    }
-    if(Array.isArray(payload.media)){
-      for(const m of payload.media){
-        const res = await fetch(m.dataUrl);
-        const blob = await res.blob();
-        await saveMedia(m.id, blob);
-      }
-    }
-    alert('Backup restored — your notebooks and notes are back.');
-    showHome();
-  } catch(err){
-    alert('Could not read that backup file. Make sure it\'s an unmodified KITAAB export.');
-  }
-}
-
-document.getElementById('exportBtn').addEventListener('click', exportBackup);
-document.getElementById('importBtn').addEventListener('click', () => {
-  document.getElementById('importInput').click();
-});
-document.getElementById('importInput').addEventListener('change', async (e) => {
-  const file = e.target.files[0];
-  if(!file) return;
-  await importBackup(file);
-  e.target.value = '';
-});
-
 let selectedNbColor = 'gold';
 document.getElementById('nbColorRow').addEventListener('click', (e) => {
   const swatch = e.target.closest('.color-swatch');
@@ -1198,6 +1126,7 @@ function makeNoteCard(note, idx){
 }
 
 document.getElementById('notesBackBtn').addEventListener('click', showHome);
+document.getElementById('notesHomeBtn').addEventListener('click', showHome);
 document.getElementById('newNoteBtn').addEventListener('click', newNote);
 document.getElementById('listViewBtn').addEventListener('click', () => { notesViewMode = 'list'; renderNotes(); });
 document.getElementById('gridViewBtn').addEventListener('click', () => { notesViewMode = 'grid'; renderNotes(); });
@@ -1258,6 +1187,7 @@ titleInput.addEventListener('input', async () => {
 });
 
 document.getElementById('backBtn').addEventListener('click', () => showNotes(currentNotebookId));
+document.getElementById('editorHomeBtn').addEventListener('click', showHome);
 
 document.getElementById('deleteNoteBtn').addEventListener('click', async () => {
   if(!currentNote) return;
@@ -1292,6 +1222,7 @@ async function renderBlocks(){
     }
     i = j;
   }
+  blockListEl.querySelectorAll('textarea.block-text').forEach(ta => autoGrow(ta));
 }
 
 function blockControls(index){
