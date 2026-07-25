@@ -6,7 +6,7 @@
 <title>KITAAB</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#F5F3EE;
@@ -31,7 +31,7 @@
     margin:0;
     background:var(--bg);
     color:var(--ink);
-    font-family:'IBM Plex Sans', sans-serif;
+    font-family:'Manrope', sans-serif;
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior:none;
   }
@@ -56,7 +56,7 @@
     gap:10px;
   }
   .brand{
-    font-family:'Archivo Black', sans-serif;
+    font-family:'Zilla Slab', serif; font-weight:700;
     font-size:22px;
     letter-spacing:0.2px;
     text-transform:uppercase;
@@ -68,7 +68,7 @@
   }
   .brand .reel{flex:1; height:19px; min-width:60px; max-width:220px;}
   .header-title{
-    font-family:'Archivo Black', sans-serif;
+    font-family:'Zilla Slab', serif; font-weight:700;
     font-size:17px;
     text-transform:uppercase;
     flex:1;
@@ -101,7 +101,7 @@
     color:var(--ink-muted);
   }
   .empty-state .big{
-    font-family:'Archivo Black', sans-serif;
+    font-family:'Zilla Slab', serif; font-weight:700;
     font-size:17px;
     color:var(--ink);
     margin-bottom:6px;
@@ -124,8 +124,8 @@
 
   .card-top{display:flex; align-items:flex-start; justify-content:space-between; gap:8px;}
   .card-title{
-    font-family:'Archivo Black', sans-serif;
-    font-size:17px;
+    font-family:'Zilla Slab', serif; font-weight:700;
+    font-size:21px;
     text-transform:uppercase;
     margin:0;
     word-break:break-word;
@@ -135,11 +135,22 @@
     font-size:14px;
     line-height:1.5;
     margin-top:8px;
-    display:-webkit-box;
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
   }
+  .note-card{
+    max-height:30vh;
+    overflow:hidden;
+    position:relative;
+  }
+  .note-card.clipped::after{
+    content:'';
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:36px;
+    background:linear-gradient(to bottom, rgba(255,255,255,0), var(--paper) 85%);
+    pointer-events:none;
+  }
+  .note-card.c2.clipped::after{background:linear-gradient(to bottom, rgba(75,168,143,0), var(--teal) 85%);}
+  .note-card.c3.clipped::after{background:linear-gradient(to bottom, rgba(185,166,232,0), var(--lavender) 85%);}
   .card-meta{
     font-family:'IBM Plex Mono', monospace;
     font-size:10.5px;
@@ -203,7 +214,7 @@
     font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:8px; letter-spacing:0.04em; text-transform:uppercase;
   }
   .recent-tile .rt-title{
-    font-family:'Archivo Black', sans-serif; font-size:12.5px; margin-top:8px; line-height:1.25; text-transform:uppercase;
+    font-family:'Zilla Slab', serif; font-weight:700; font-size:14px; margin-top:8px; line-height:1.25; text-transform:uppercase;
   }
   .recent-tile .rt-meta{
     font-family:'IBM Plex Mono', monospace; font-size:8.5px; margin-top:12px; opacity:0.75;
@@ -217,7 +228,7 @@
     background:var(--ink); color:#fff;
     border:3px solid var(--line);
     box-shadow:5px 5px 0 var(--coral);
-    font-family:'IBM Plex Sans', sans-serif; font-weight:700; font-size:13.5px;
+    font-family:'Manrope', sans-serif; font-weight:700; font-size:13.5px;
     padding:13px 18px;
     cursor:pointer;
     z-index:20;
@@ -232,13 +243,13 @@
     background:none;
     border:none;
     color:var(--ink);
-    font-family:'Archivo Black', sans-serif;
+    font-family:'Zilla Slab', serif; font-weight:700;
     font-size:19px;
     text-transform:uppercase;
     outline:none;
     min-width:0;
   }
-  #titleInput::placeholder{color:var(--ink-faint); text-transform:none; font-family:'IBM Plex Sans', sans-serif; font-weight:500;}
+  #titleInput::placeholder{color:var(--ink-faint); text-transform:none; font-family:'Manrope', sans-serif; font-weight:500;}
   #blockList{padding:16px; display:flex; flex-direction:column; gap:0;}
 
   .block{
@@ -269,21 +280,36 @@
   }
   .block-controls button:hover{background:var(--gold);}
 
-  textarea.block-text{
+  .block-text{
     width:100%;
     background:none;
     border:none;
     outline:none;
     color:var(--ink);
-    font-family:'IBM Plex Sans', sans-serif;
+    font-family:'Manrope', sans-serif;
     font-weight:500;
     font-size:17px;
     line-height:1.65;
-    resize:none;
     min-height:32px;
-    overflow:hidden;
+    white-space:pre-wrap;
+    word-wrap:break-word;
   }
-  textarea.block-text::placeholder{color:var(--ink-faint);}
+  .block-text:empty:before{
+    content:attr(data-placeholder);
+    color:var(--ink-faint);
+  }
+  .block-text mark{background:#F4C63D; color:var(--ink); padding:0 2px;}
+  .rich-toolbar{
+    display:flex; gap:6px; margin-bottom:10px;
+  }
+  .rich-toolbar button{
+    width:28px; height:28px;
+    background:var(--bg-elevated); border:2px solid var(--line);
+    font-size:13px; cursor:pointer; color:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .rich-toolbar button:hover{background:var(--gold);}
+  .rich-toolbar button:active{transform:translate(1px,1px);}
 
   .audio-block{display:flex; align-items:center; gap:12px;}
   .reel-icon{width:34px;height:34px; flex-shrink:0; color:var(--ink); background:var(--teal); border:2.5px solid var(--line);}
@@ -338,7 +364,7 @@
     gap:4px;
     font-size:10px;
     font-weight:600;
-    font-family:'IBM Plex Sans', sans-serif;
+    font-family:'Manrope', sans-serif;
     cursor:pointer;
     transition:transform .08s, box-shadow .08s;
   }
@@ -397,7 +423,7 @@
     max-width:640px;
   }
   .modal-sheet h3{
-    font-family:'Archivo Black', sans-serif;
+    font-family:'Zilla Slab', serif; font-weight:700;
     font-size:17px;
     text-transform:uppercase;
     margin:0 0 14px 0;
@@ -420,7 +446,7 @@
     border-radius:0;
     border:2.5px solid var(--line);
     font-size:14px;
-    font-family:'IBM Plex Sans', sans-serif;
+    font-family:'Manrope', sans-serif;
     font-weight:700;
     cursor:pointer;
     transition:transform .08s, box-shadow .08s;
@@ -459,7 +485,7 @@
   .grid-tile:nth-child(3n+2){background:var(--teal); color:#fff;}
   .grid-tile:nth-child(3n+3){background:var(--lavender);}
   .grid-tile .gt-title{
-    font-family:'Archivo Black', sans-serif; font-size:12px; text-transform:uppercase; line-height:1.25;
+    font-family:'Zilla Slab', serif; font-weight:700; font-size:13.5px; text-transform:uppercase; line-height:1.25;
   }
   .grid-tile .gt-meta{
     font-family:'IBM Plex Mono', monospace; font-size:8px; margin-top:10px; opacity:0.75;
@@ -482,7 +508,7 @@
   .search-bar-wrap svg{flex-shrink:0; color:var(--ink-muted);}
   .search-bar-wrap input{
     border:none; outline:none; background:none; flex:1;
-    font-family:'IBM Plex Sans', sans-serif; font-size:14px; color:var(--ink);
+    font-family:'Manrope', sans-serif; font-size:14px; color:var(--ink);
   }
   .search-bar-wrap input::placeholder{color:var(--ink-faint);}
   .search-result-card{
@@ -494,7 +520,7 @@
   .search-result-card .sr-notebook{
     font-family:'IBM Plex Mono', monospace; font-size:9px; color:var(--ink-muted); letter-spacing:0.04em; text-transform:uppercase;
   }
-  .search-result-card .sr-title{font-family:'Archivo Black', sans-serif; font-size:15px; text-transform:uppercase; margin-top:6px;}
+  .search-result-card .sr-title{font-family:'Zilla Slab', serif; font-weight:700; font-size:15px; text-transform:uppercase; margin-top:6px;}
   .search-result-card .sr-snippet{font-size:13px; color:var(--ink-muted); margin-top:6px; line-height:1.5;}
   .color-swatch-row{display:flex; gap:10px; margin:-6px 0 16px 0;}
   .color-swatch{
@@ -520,9 +546,15 @@
   <div id="homeView-wrap">
     <header>
       <div class="brand">
+        <button class="icon-btn" id="homeHomeBtn" aria-label="Go to home">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+        </button>
         KITAAB
       </div>
       <div class="header-actions">
+        <button class="icon-btn" id="trashBtn" aria-label="Trash">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+        </button>
         <span class="sync-status" id="syncStatus">●&nbsp;Synced</span>
       </div>
     </header>
@@ -534,6 +566,17 @@
     <button class="fab" id="newNotebookBtn" aria-label="New notebook">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
     </button>
+  </div>
+
+  <!-- TRASH -->
+  <div id="trashView-wrap" style="display:none;">
+    <header>
+      <button class="icon-btn" id="trashBackBtn" aria-label="Back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="header-title">Trash</div>
+    </header>
+    <div id="trashList" style="padding:18px 16px 100px 16px;"></div>
   </div>
 
   <!-- NOTES within a notebook -->
@@ -673,6 +716,7 @@ function rowToNote(row){
     notebookId: row.notebook_id,
     title: row.title || '',
     pinned: !!row.pinned,
+    deleted: !!row.deleted,
     blocks: row.blocks || [],
     createdAt: row.created_at,
     updatedAt: row.updated_at
@@ -684,16 +728,17 @@ function noteToRow(note){
     notebook_id: note.notebookId,
     title: note.title || '',
     pinned: !!note.pinned,
+    deleted: !!note.deleted,
     blocks: note.blocks || [],
     created_at: note.createdAt,
     updated_at: note.updatedAt
   };
 }
 function rowToNotebook(row){
-  return { id: row.id, name: row.name, color: row.color || 'white', createdAt: row.created_at, updatedAt: row.updated_at };
+  return { id: row.id, name: row.name, color: row.color || 'white', deleted: !!row.deleted, createdAt: row.created_at, updatedAt: row.updated_at };
 }
 function notebookToRow(nb){
-  return { id: nb.id, name: nb.name, color: nb.color || 'white', created_at: nb.createdAt, updated_at: nb.updatedAt };
+  return { id: nb.id, name: nb.name, color: nb.color || 'white', deleted: !!nb.deleted, created_at: nb.createdAt, updated_at: nb.updatedAt };
 }
 
 function setSyncStatus(state, message){
@@ -718,7 +763,12 @@ async function saveNote(note){
   setSyncStatus('synced');
 }
 async function getAllNotes(){
-  const { data, error } = await sb.from('notes').select('*');
+  const { data, error } = await sb.from('notes').select('*').eq('deleted', false);
+  if(error) throw error;
+  return (data || []).map(rowToNote);
+}
+async function getTrashedNotes(){
+  const { data, error } = await sb.from('notes').select('*').eq('deleted', true);
   if(error) throw error;
   return (data || []).map(rowToNote);
 }
@@ -751,7 +801,12 @@ async function saveNotebook(nb){
   setSyncStatus('synced');
 }
 async function getAllNotebooks(){
-  const { data, error } = await sb.from('notebooks').select('*');
+  const { data, error } = await sb.from('notebooks').select('*').eq('deleted', false);
+  if(error) throw error;
+  return (data || []).map(rowToNotebook);
+}
+async function getTrashedNotebooks(){
+  const { data, error } = await sb.from('notebooks').select('*').eq('deleted', true);
   if(error) throw error;
   return (data || []).map(rowToNotebook);
 }
@@ -771,6 +826,11 @@ function escapeHtml(str){
   const d = document.createElement('div');
   d.textContent = str || '';
   return d.innerHTML;
+}
+function stripHtml(html){
+  const d = document.createElement('div');
+  d.innerHTML = html || '';
+  return d.textContent || '';
 }
 function formatRelativeDate(ts){
   const diff = Date.now() - ts;
@@ -804,15 +864,18 @@ function dayKey(ts){
 /* ================= VIEW ELEMENTS ================= */
 const homeViewWrap = document.getElementById('homeView-wrap');
 const notesViewWrap = document.getElementById('notesView-wrap');
+const trashViewWrap = document.getElementById('trashView-wrap');
 const editorView = document.getElementById('editorView');
 const addBar = document.getElementById('addBar');
 const homeList = document.getElementById('homeList');
 const notesList = document.getElementById('notesList');
+const trashList = document.getElementById('trashList');
 const notebookTitleEl = document.getElementById('notebookTitleEl');
 
 function showHome(){
   homeViewWrap.style.display = 'block';
   notesViewWrap.style.display = 'none';
+  trashViewWrap.style.display = 'none';
   editorView.style.display = 'none';
   addBar.style.display = 'none';
   currentNotebookId = null;
@@ -823,6 +886,7 @@ function showNotes(notebookId){
   currentNotebookId = notebookId;
   homeViewWrap.style.display = 'none';
   notesViewWrap.style.display = 'block';
+  trashViewWrap.style.display = 'none';
   editorView.style.display = 'none';
   addBar.style.display = 'none';
   renderNotes();
@@ -830,8 +894,17 @@ function showNotes(notebookId){
 function showEditor(){
   homeViewWrap.style.display = 'none';
   notesViewWrap.style.display = 'none';
+  trashViewWrap.style.display = 'none';
   editorView.style.display = 'flex';
   addBar.style.display = 'flex';
+}
+function showTrash(){
+  homeViewWrap.style.display = 'none';
+  notesViewWrap.style.display = 'none';
+  trashViewWrap.style.display = 'block';
+  editorView.style.display = 'none';
+  addBar.style.display = 'none';
+  renderTrash();
 }
 
 /* ================= HOME (NOTEBOOKS) ================= */
@@ -927,15 +1000,16 @@ function renderHomeUI(){
     card.addEventListener('click', () => showNotes(nb.id));
     card.querySelector('.card-delete').addEventListener('click', async (e) => {
       e.stopPropagation();
-      if(confirm(`Delete notebook "${nb.name}" and all its notes? This cannot be undone.`)){
+      if(confirm(`Move notebook "${nb.name}" and its notes to Trash?`)){
         const nbNotes = notes.filter(n => n.notebookId === nb.id);
         for(const n of nbNotes){
-          for(const b of n.blocks){
-            if(b.mediaId) await deleteMediaDB(b.mediaId);
-          }
-          await deleteNoteDB(n.id);
+          n.deleted = true;
+          n.updatedAt = Date.now();
+          await saveNote(n);
         }
-        await deleteNotebookDB(nb.id);
+        nb.deleted = true;
+        nb.updatedAt = Date.now();
+        await saveNotebook(nb);
         renderHome();
       }
     });
@@ -946,7 +1020,7 @@ function renderHomeUI(){
 function renderSearchResults(query, notebookById){
   const matches = notes.filter(note => {
     if((note.title || '').toLowerCase().includes(query)) return true;
-    return note.blocks.some(b => b.type === 'text' && (b.content || '').toLowerCase().includes(query));
+    return note.blocks.some(b => b.type === 'text' && stripHtml(b.content || '').toLowerCase().includes(query));
   }).sort((a,b) => b.updatedAt - a.updatedAt);
 
   const label = document.createElement('div');
@@ -965,11 +1039,12 @@ function renderSearchResults(query, notebookById){
   matches.forEach(note => {
     const nb = notebookById[note.notebookId];
     let snippet = '';
-    const textBlock = note.blocks.find(b => b.type === 'text' && (b.content || '').toLowerCase().includes(query));
+    const textBlock = note.blocks.find(b => b.type === 'text' && stripHtml(b.content || '').toLowerCase().includes(query));
     if(textBlock){
-      const idx = textBlock.content.toLowerCase().indexOf(query);
+      const plain = stripHtml(textBlock.content);
+      const idx = plain.toLowerCase().indexOf(query);
       const start = Math.max(0, idx - 40);
-      snippet = (start > 0 ? '…' : '') + textBlock.content.slice(start, idx + query.length + 60).trim() + '…';
+      snippet = (start > 0 ? '…' : '') + plain.slice(start, idx + query.length + 60).trim() + '…';
     }
     const card = document.createElement('div');
     card.className = 'search-result-card';
@@ -985,6 +1060,116 @@ function renderSearchResults(query, notebookById){
     homeList.appendChild(card);
   });
 }
+
+/* ================= TRASH ================= */
+async function renderTrash(){
+  trashList.innerHTML = `<div class="empty-state"><div class="big">Loading…</div></div>`;
+  let trashedNotebooks, trashedNotes, allNotebooks;
+  try{
+    trashedNotebooks = await getTrashedNotebooks();
+    trashedNotes = await getTrashedNotes();
+    allNotebooks = await getAllNotebooks();
+  } catch(err){
+    trashList.innerHTML = `<div class="empty-state"><div class="big">Couldn't load Trash.</div><div>${escapeHtml(err.message || String(err))}</div></div>`;
+    return;
+  }
+  const notebookById = {};
+  allNotebooks.forEach(nb => notebookById[nb.id] = nb);
+  trashedNotebooks.forEach(nb => notebookById[nb.id] = nb);
+
+  trashList.innerHTML = '';
+  if(trashedNotebooks.length === 0 && trashedNotes.length === 0){
+    trashList.innerHTML = `<div class="empty-state"><div class="big">Trash is empty.</div><div>Deleted notebooks and notes will show up here.</div></div>`;
+    return;
+  }
+
+  if(trashedNotebooks.length){
+    const label = document.createElement('div');
+    label.className = 'section-label';
+    label.textContent = 'Notebooks';
+    trashList.appendChild(label);
+    trashedNotebooks.forEach(nb => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-top">
+          <h3 class="card-title">${escapeHtml(nb.name)}</h3>
+        </div>
+        <div class="card-meta">Deleted notebook</div>
+        <div class="modal-actions" style="margin-top:12px;">
+          <button class="btn btn-ghost" data-action="restore-nb" data-id="${nb.id}">Restore</button>
+          <button class="btn btn-primary" data-action="wipe-nb" data-id="${nb.id}" style="background:var(--coral); color:#fff;">Delete forever</button>
+        </div>
+      `;
+      card.querySelector('[data-action="restore-nb"]').addEventListener('click', async () => {
+        nb.deleted = false;
+        nb.updatedAt = Date.now();
+        await saveNotebook(nb);
+        const nbNotes = trashedNotes.filter(n => n.notebookId === nb.id);
+        for(const n of nbNotes){
+          n.deleted = false;
+          n.updatedAt = Date.now();
+          await saveNote(n);
+        }
+        renderTrash();
+      });
+      card.querySelector('[data-action="wipe-nb"]').addEventListener('click', async () => {
+        if(!confirm(`Permanently delete notebook "${nb.name}" and all its notes? This cannot be undone.`)) return;
+        const nbNotes = trashedNotes.filter(n => n.notebookId === nb.id);
+        for(const n of nbNotes){
+          for(const b of n.blocks){
+            if(b.mediaId) await deleteMediaDB(b.mediaId);
+          }
+          await deleteNoteDB(n.id);
+        }
+        await deleteNotebookDB(nb.id);
+        renderTrash();
+      });
+      trashList.appendChild(card);
+    });
+  }
+
+  const standaloneNotes = trashedNotes.filter(n => !trashedNotebooks.some(nb => nb.id === n.notebookId));
+  if(standaloneNotes.length){
+    const label = document.createElement('div');
+    label.className = 'section-label';
+    label.textContent = 'Notes';
+    trashList.appendChild(label);
+    standaloneNotes.forEach(note => {
+      const nb = notebookById[note.notebookId];
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-top">
+          <h3 class="card-title">${escapeHtml(note.title || 'Untitled note')}</h3>
+        </div>
+        <div class="card-meta">${escapeHtml(nb ? nb.name : 'Notebook')}</div>
+        <div class="modal-actions" style="margin-top:12px;">
+          <button class="btn btn-ghost" data-action="restore-note">Restore</button>
+          <button class="btn btn-primary" data-action="wipe-note" style="background:var(--coral); color:#fff;">Delete forever</button>
+        </div>
+      `;
+      card.querySelector('[data-action="restore-note"]').addEventListener('click', async () => {
+        note.deleted = false;
+        note.updatedAt = Date.now();
+        await saveNote(note);
+        renderTrash();
+      });
+      card.querySelector('[data-action="wipe-note"]').addEventListener('click', async () => {
+        if(!confirm(`Permanently delete "${note.title || 'this note'}"? This cannot be undone.`)) return;
+        for(const b of note.blocks){
+          if(b.mediaId) await deleteMediaDB(b.mediaId);
+        }
+        await deleteNoteDB(note.id);
+        renderTrash();
+      });
+      trashList.appendChild(card);
+    });
+  }
+}
+
+document.getElementById('trashBtn').addEventListener('click', showTrash);
+document.getElementById('trashBackBtn').addEventListener('click', showHome);
 function blobToDataURL(blob){
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -1092,18 +1277,18 @@ function makeGridTile(note){
 }
 
 function makeNoteCard(note, idx){
-  const firstText = note.blocks.find(b => b.type==='text' && b.content && b.content.trim());
+  const firstText = note.blocks.find(b => b.type==='text' && b.content && stripHtml(b.content).trim());
   const firstMedia = note.blocks.find(b => b.type !== 'text');
   let preview = '';
   if(firstText){
-    preview = firstText.content.trim().slice(0,140);
+    preview = stripHtml(firstText.content).trim();
   } else if(firstMedia){
     preview = blockPreviewIcon(firstMedia.type) + ' ' + firstMedia.type.charAt(0).toUpperCase()+firstMedia.type.slice(1);
   } else {
     preview = 'Empty note';
   }
   const card = document.createElement('div');
-  card.className = 'card c' + ((idx % 3) + 1);
+  card.className = 'card note-card c' + ((idx % 3) + 1);
   card.innerHTML = `
     <div class="card-top">
       <h3 class="card-title">${escapeHtml(note.title || 'Untitled note')}</h3>
@@ -1121,6 +1306,11 @@ function makeNoteCard(note, idx){
     note.updatedAt = Date.now();
     await saveNote(note);
     renderNotes();
+  });
+  requestAnimationFrame(() => {
+    if(card.scrollHeight > card.clientHeight + 2){
+      card.classList.add('clipped');
+    }
   });
   return card;
 }
@@ -1188,14 +1378,14 @@ titleInput.addEventListener('input', async () => {
 
 document.getElementById('backBtn').addEventListener('click', () => showNotes(currentNotebookId));
 document.getElementById('editorHomeBtn').addEventListener('click', showHome);
+document.getElementById('homeHomeBtn').addEventListener('click', showHome);
 
 document.getElementById('deleteNoteBtn').addEventListener('click', async () => {
   if(!currentNote) return;
-  if(confirm('Delete this note? This cannot be undone.')){
-    for(const b of currentNote.blocks){
-      if(b.mediaId) await deleteMediaDB(b.mediaId);
-    }
-    await deleteNoteDB(currentNote.id);
+  if(confirm('Move this note to Trash?')){
+    currentNote.deleted = true;
+    currentNote.updatedAt = Date.now();
+    await saveNote(currentNote);
     showNotes(currentNotebookId);
   }
 });
@@ -1222,7 +1412,6 @@ async function renderBlocks(){
     }
     i = j;
   }
-  blockListEl.querySelectorAll('textarea.block-text').forEach(ta => autoGrow(ta));
 }
 
 function blockControls(index){
@@ -1241,14 +1430,38 @@ async function renderBlock(block, index){
   wrap.className = 'block';
 
   if(block.type === 'text'){
-    wrap.innerHTML = blockControls(index) + `<textarea class="block-text" placeholder="Write lyrics or notes…">${escapeHtml(block.content||'')}</textarea>`;
-    const ta = wrap.querySelector('textarea');
-    autoGrow(ta);
-    ta.addEventListener('input', async () => {
-      block.content = ta.value;
+    wrap.innerHTML = blockControls(index) + `
+      <div class="rich-toolbar">
+        <button type="button" data-cmd="bold" title="Bold"><b>B</b></button>
+        <button type="button" data-cmd="italic" title="Italic"><i>I</i></button>
+        <button type="button" data-cmd="hilite" title="Highlight hook line">H</button>
+      </div>
+      <div class="block-text" contenteditable="true" data-placeholder="Write lyrics or notes…">${block.content || ''}</div>
+    `;
+    const contentEl = wrap.querySelector('.block-text');
+    contentEl.addEventListener('input', async () => {
+      block.content = contentEl.innerHTML;
       block.ts = Date.now();
-      autoGrow(ta);
       await persistNote();
+    });
+    contentEl.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        document.execCommand('insertLineBreak');
+      }
+    });
+    wrap.querySelectorAll('.rich-toolbar button').forEach(btn => {
+      btn.addEventListener('mousedown', (e) => e.preventDefault());
+      btn.addEventListener('click', async () => {
+        contentEl.focus();
+        const cmd = btn.dataset.cmd;
+        if(cmd === 'bold') document.execCommand('bold');
+        else if(cmd === 'italic') document.execCommand('italic');
+        else if(cmd === 'hilite') document.execCommand('hiliteColor', false, '#F4C63D');
+        block.content = contentEl.innerHTML;
+        block.ts = Date.now();
+        await persistNote();
+      });
     });
   }
   else if(block.type === 'audio'){
@@ -1286,6 +1499,8 @@ async function renderBlock(block, index){
       const idx = parseInt(btn.dataset.index, 10);
       if(action === 'delete'){
         const removed = currentNote.blocks[idx];
+        const kind = removed.type === 'text' ? 'text' : removed.type;
+        if(!confirm(`Remove this ${kind} block?`)) return;
         if(removed.mediaId) await deleteMediaDB(removed.mediaId);
         currentNote.blocks.splice(idx,1);
       } else if(action === 'up'){
@@ -1299,11 +1514,6 @@ async function renderBlock(block, index){
   });
 
   return wrap;
-}
-
-function autoGrow(ta){
-  ta.style.height = 'auto';
-  ta.style.height = (ta.scrollHeight) + 'px';
 }
 
 /* ================= ADD BLOCKS ================= */
